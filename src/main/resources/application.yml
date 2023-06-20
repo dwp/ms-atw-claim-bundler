@@ -1,0 +1,70 @@
+app_name: @project.artifactId@
+app_version: @project.version@
+
+server:
+  port: 9020
+
+aws:
+  s3:
+    default-endpoint: ${AWS_OVERRIDE_URL:}
+    bucket-name: ${AWS_S3_BUCKET}
+  encryption:
+    enabled: ${AWS_S3_ENCRYPTION}
+    kmsOverride: ${AWS_KMS_OVERRIDE_URL:}
+    dataKey: ${AWS_S3_KMS_KEY}
+cloud:
+  aws:
+    stack:
+      auto: false
+    region:
+      static: ${AWS_REGION}
+      auto: false
+    credentials:
+      instanceProfile: false
+
+document-batch:
+  queue-name: ${DOCUMENT_BATCH_QUEUE_NAME}
+  callerId: ${DOCUMENT_BATCH_CALLERID}
+  responseRoutingKey:
+    claim: ${DOCUMENT_BATCH_CLAIM_RESPONSE_ROUTING_KEY}
+    contact: ${DOCUMENT_BATCH_CONTACT_RESPONSE_ROUTING_KEY}
+
+uk:
+  gov:
+    dwp:
+      health:
+        integration:
+          outbound-topic-exchange: ${CLAIM_BUNDLER_TOPIC}
+          aws-region: ${AWS_REGION}
+          sqs-endpoint-override: ${AWS_SQS_OVERRIDE_URL:}
+          sns-endpoint-override: ${AWS_SNS_OVERRIDE_URL:}
+        event:
+          cryptoConfig:
+            cacheKmsDataKeys: ${MESSAGING_ENCRYPTION}
+            dataKeyId: ${AWS_ENCRYPTION_DATA_KEY}
+            kmsEndpointOverride: ${AWS_ENCRYPTION_KMS_OVERRIDE:}
+            region: ${AWS_REGION}
+
+
+service:
+  consumer:
+    topic: ${CLAIM_BUNDLER_TOPIC}
+    new-claim:
+      queue: ${CLAIM_BUNDLER_CLAIM_SUBMIT_QUEUE}
+      routingKey: ${CLAIM_BUNDLER_CLAIM_SUBMIT_ROUTING_KEY}
+    update-contact:
+      queue: ${CLAIM_BUNDLER_UPDATE_CONTACT_QUEUE}
+      routingKey: ${CLAIM_BUNDLER_UPDATE_CONTACT_ROUTING_KEY}
+    new-claim-response:
+      queue: ${CLAIM_BUNDLER_CLAIM_RESPONSE_QUEUE}
+    update-contact-response:
+      queue: ${CLAIM_BUNDLER_UPDATE_CONTACT_RESPONSE_QUEUE}
+  ms-claim-to-pdf:
+    uri: ${CLAIM_TO_PDF_URI}
+  ms-claim:
+    uri: ${CLAIM_URI}
+
+feature:
+  encryption:
+    messaging:
+      enabled: ${MESSAGING_ENCRYPTION}

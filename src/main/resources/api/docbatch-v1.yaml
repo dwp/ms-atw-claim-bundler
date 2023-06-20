@@ -1,0 +1,214 @@
+# https://gitlab.com/dwp/health/gateway-documents/libraries/documents-spec/-/blob/develop/openapi/docbatch-v1.yaml
+
+openapi: '3.0.1'
+
+info:
+  title: Document Batch Service API
+  description: API specification for the Document service.
+  version: '1.0.0'
+
+servers:
+  - url: http://localhost:8001
+    description: Document batch Services API.
+paths:
+
+  /v1/documents/batch/upload:
+    post:
+      summary: Uploads a batch of documents
+      tags:
+        - batch documents upload
+      operationId: batchUploadDocument
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchUploadRequest'
+      responses:
+        200:
+          description: "The generated batch id"
+          content:
+            text/plain:
+              schema:
+                type: string
+        400:
+          description: "Bad request, fails validation etc"
+        500:
+          description: "Server error, unexpected error. Problem with processing the batch"
+
+  /v1/documents/batch/complete:
+    get:
+      summary: Request to determine if a batch upload has been completed.
+      tags:
+        - batch documents upload result
+      operationId: batchUploadResultAvailable
+      parameters:
+        - in: query
+          name: requestId
+          description: "The id of the batch to which results are required for"
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: "If response avaliable"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchUploadResponse'
+        404:
+          description: "No response available"
+        500:
+          description: "Server error, unexpected error."
+    post:
+      summary: The endpoint to which SFT will post the response to
+      tags:
+        - batch documents upload result
+      operationId: batchUploadResponse
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        200:
+          description: "Response to indicate success"
+        400:
+          description: "Bad request"
+        500:
+          description: "Server error, unexpected error. Problem processing the file"
+
+components:
+  schemas:
+    Pdf:
+      type: string
+      format: binary
+
+    BatchUploadRequest:
+      properties:
+        file:
+          type: array
+          items:
+            type: string
+            format: binary
+        metaData:
+          $ref: '#/components/schemas/BatchUpload'
+      required:
+        - file
+        - metaData
+
+    BatchUpload:
+      type: object
+      properties:
+        requestId:
+          type: string
+          description: "A unique identifier from the caller for this request, a GUID."
+        callerId:
+          type: string
+          description: "The identifier for the caller e.g. PIP online"
+        correlationId:
+          type: string
+          description: "The correlation ID if known."
+        responseRoutingKey:
+          type: string
+          description: "If set then results of the batch upload will be posted to a message queue, this is the routing key."
+        envelopes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Envelope'
+      required:
+        - request_id
+        - caller_id
+        - envelopes
+
+    Envelope:
+      type: object
+      properties:
+        ninoBody:
+          type: string
+          pattern: "^[A-CEGHJ-PR-TW-Z]{1}[A-CEGHJ-NPR-TW-Z]{1} ?[0-9]{2} ?[0-9]{2} ?[0-9]{2}$"
+        ninoSuffix:
+          type: string
+          pattern: "^[A-DFM]{0,1}$"
+          description: "Only valid if nino body set"
+        customerReferenceNumber:
+          type: string
+          description: "This or nino must be provided"
+        dateOfBirth:
+          type: string
+          format: date
+        forename:
+          type: string
+        surname:
+          type: string
+        postCode:
+          type: string
+        agentStaffId:
+          type: string
+          default: "843"
+        claimRef:
+          type: string
+        documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/EnvelopeDocument'
+      required:
+        - documents
+
+    EnvelopeDocument:
+      type: object
+      properties:
+        documentUrl:
+          type: string
+          description: "The url to the document in AWS S3 or the name of the file included in the multipart file"
+        documentType:
+          type: integer
+          description: "The document type number, too many to list see external sources"
+        documentDate:
+          type: string
+          format: 'date-time'
+      required:
+        - documentUrl
+        - documentType
+
+    BatchUploadResponse:
+      type: object
+      properties:
+        requestId:
+          type: string
+          description: "The unique identifier previously supplied by the caller for the request. Guid."
+        success:
+          type: boolean
+          description: "Flag to indicate success (true) or failure (false) of request."
+        errorMessage:
+          type: string
+          description: "Any error details in case of failure."
+        additionalErrorDetails:
+          type: array
+          description: "Any additional error details if available."
+          items:
+            type: object
+            properties:
+              error:
+                type: string
+                description: "Description of the error"
+              propertyName:
+                type: string
+                description: "Name of the property that failed validation (if appropriate)"
+              propertyJsonPath:
+                type: string
+                description: "Path to the error in the original request"
+              propertyValue:
+                type: string
+                description: "The property value"
+            required:
+              - error
+      required:
+        - requestId
+        - success
+        - errorMessage
+
+

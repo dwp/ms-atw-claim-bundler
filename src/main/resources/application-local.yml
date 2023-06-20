@@ -1,0 +1,65 @@
+app_name: @project.artifactId@
+app_version: @project.version@
+
+aws:
+  s3:
+    default-endpoint: http://localstack:4566
+    bucket-name: atw-claim
+  encryption:
+    enabled: false
+    kmsOverride: http://localstack:4566
+    dataKey: alias/test_evidence_s3_id
+cloud:
+  aws:
+    region:
+      static: us-east-1
+    credentials:
+      accessKey: foo
+      secretKey: bars
+
+document-batch:
+  queue-name: docbatch-batch-upload
+  callerId: ATW
+  responseRoutingKey:
+    claim: batch.response.claim
+    contact: batch.response.contact
+
+uk:
+  gov:
+    dwp:
+      health:
+        integration:
+          outbound-topic-exchange: send-to-agent-topic
+          aws-region: us-east-1
+          sqs-endpoint-override: http://localstack:4566
+          sns-endpoint-override: http://localstack:4566
+        event:
+          cryptoConfig:
+            cacheKmsDataKeys: true
+            dataKeyId: alias/test_claims_sns_id
+            kmsEndpointOverride: http://localhost:4566
+            region: us-east-1
+
+service:
+  consumer:
+    topic: atw-send-to-drs
+    new-claim:
+      queue: atw-send-claim
+      routingKey: new.claim
+    update-contact:
+      queue: atw-update-contact
+      routingKey: update.contact
+    new-claim-response:
+      queue: atw-drs-claim-response
+    update-contact-response:
+      queue: atw-drs-contact-response
+  ms-claim-to-pdf:
+    uri: http://ms-claim-to-pdf:9015
+  ms-claim:
+    uri: http://ms-claim:9014
+
+
+feature:
+  encryption:
+    messaging:
+      enabled: false
