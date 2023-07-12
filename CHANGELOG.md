@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.9.0 - (2023-07-11)
+
+* Update spring logging for production
+* Update docker-compose file
+* Update fragments to latest version
+
 ## 1.8.0 - (2023-06-20)
 
 * adding open source functionality for a github repository

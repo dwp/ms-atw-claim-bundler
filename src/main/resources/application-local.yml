@@ -63,3 +63,8 @@ feature:
   encryption:
     messaging:
       enabled: false
+
+spring:
+  logging:
+    level:
+      ROOT: INFO

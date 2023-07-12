@@ -68,3 +68,8 @@ feature:
   encryption:
     messaging:
       enabled: ${MESSAGING_ENCRYPTION}
+
+spring:
+  logging:
+    level:
+      ROOT: INFO
