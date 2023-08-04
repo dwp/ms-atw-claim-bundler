@@ -72,4 +72,4 @@ feature:
 spring:
   logging:
     level:
-      ROOT: INFO
+      ROOT: ${LOG_LEVEL:INFO}
