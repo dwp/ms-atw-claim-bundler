@@ -1,4 +1,4 @@
-FROM gcr.io/distroless/java11@sha256:e65ff03cf2bee3e2ea2a3fd26a49e5595be4f8d3df0e34454f32b06fc7a83753
+FROM gcr.io/distroless/java11@sha256:e97b56c50a651ec41a1e40cf2f8f96eb7ce4a4f42e1094e8462ab47a949c79e9
 EXPOSE 9020
 
 COPY target/ms-claim-bundler-*.jar /ms-claim-bundler.jar

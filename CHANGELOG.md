@@ -1,5 +1,12 @@
 # Changelog
 
+# 1.11.0 - (2023-10-30)
+
+* Updated dependency versions
+* Update distroless version
+* Update fragments
+* Update pipeline to v3.1
+
 # 1.10.0 - (2023-08-02)
 
 * Make logging configurable in application.yml
