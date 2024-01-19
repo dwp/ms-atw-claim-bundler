@@ -1,5 +1,6 @@
 package uk.gov.dwp.health.atw.msclaimbundler.models.enums;
 
+import static uk.gov.dwp.health.atw.msclaimbundler.config.ClaimFormConfiguration.avForm;
 import static uk.gov.dwp.health.atw.msclaimbundler.config.ClaimFormConfiguration.eaForm;
 import static uk.gov.dwp.health.atw.msclaimbundler.config.ClaimFormConfiguration.newOrAmendedDetailsForm;
 import static uk.gov.dwp.health.atw.msclaimbundler.config.ClaimFormConfiguration.swForm;
@@ -13,7 +14,8 @@ public enum ClaimType {
   EQUIPMENT_OR_ADAPTATION("EA", eaForm),
   SUPPORT_WORKER("SW", swForm),
   TRAVEL_TO_WORK("TW", ttwForm),
-  NEW_OR_AMENDED_DETAILS("NP", newOrAmendedDetailsForm);
+  NEW_OR_AMENDED_DETAILS("NP", newOrAmendedDetailsForm),
+  ADAPTATION_TO_VEHICLE("AV", avForm);
 
   private static final Map<String, ClaimType> BY_LABEL = new HashMap<>();
   public final String label;

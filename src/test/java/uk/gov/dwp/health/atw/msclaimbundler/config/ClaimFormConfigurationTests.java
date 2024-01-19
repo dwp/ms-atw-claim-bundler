@@ -2,6 +2,7 @@ package uk.gov.dwp.health.atw.msclaimbundler.config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static uk.gov.dwp.health.atw.msclaimbundler.config.ClaimFormConfiguration.avForm;
 import static uk.gov.dwp.health.atw.msclaimbundler.config.ClaimFormConfiguration.eaForm;
 import static uk.gov.dwp.health.atw.msclaimbundler.config.ClaimFormConfiguration.swForm;
 import static uk.gov.dwp.health.atw.msclaimbundler.config.ClaimFormConfiguration.ttwForm;
@@ -21,6 +22,13 @@ class ClaimFormConfigurationTests {
   }
 
   @Test
+  @DisplayName("Test AV Form Configuration")
+  void testAvFormConfiguration() {
+    assertEquals("DP224JP", avForm.getAtwFormId());
+    assertEquals(12067, avForm.getDrsDocumentId());
+  }
+
+  @Test
   @DisplayName("Test SW Form Configuration")
   void testSwFormConfiguration() {
     assertEquals("DP222JP", swForm.getAtwFormId());
@@ -35,7 +43,7 @@ class ClaimFormConfigurationTests {
   }
 
   @Test
-  @DisplayName("get expection when calling utility function")
+  @DisplayName("get exception when calling utility function")
   void callingUtilityFunction() {
     assertThrows(IllegalStateException.class, () -> new ClaimFormConfiguration()
     );

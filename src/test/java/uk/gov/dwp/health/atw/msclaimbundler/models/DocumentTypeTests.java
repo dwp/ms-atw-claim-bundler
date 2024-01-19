@@ -32,5 +32,9 @@ class DocumentTypeTests {
     assertEquals(12075, DocumentType.INVOICE.id);
   }
 
-
+  @Test
+  @DisplayName("Test AV Document Type")
+  void testAvDocumentType() {
+    assertEquals(12067, DocumentType.ADAPTATION_TO_VEHICLE.id);
+  }
 }

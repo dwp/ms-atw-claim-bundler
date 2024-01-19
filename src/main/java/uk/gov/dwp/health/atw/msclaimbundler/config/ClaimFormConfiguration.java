@@ -1,5 +1,6 @@
 package uk.gov.dwp.health.atw.msclaimbundler.config;
 
+import static uk.gov.dwp.health.atw.msclaimbundler.models.enums.DocumentType.ADAPTATION_TO_VEHICLE;
 import static uk.gov.dwp.health.atw.msclaimbundler.models.enums.DocumentType.EQUIPMENT_OR_ADAPTATIONS;
 import static uk.gov.dwp.health.atw.msclaimbundler.models.enums.DocumentType.NEW_OR_AMENDED_DETAILS;
 import static uk.gov.dwp.health.atw.msclaimbundler.models.enums.DocumentType.SUPPORT_WORKER;
@@ -19,5 +20,7 @@ public final class ClaimFormConfiguration {
   public static final FormConfig ttwForm = new FormConfig("DP226JP", TRAVEL_TO_WORK.id);
   public static final FormConfig newOrAmendedDetailsForm =
       new FormConfig("DP228JP", NEW_OR_AMENDED_DETAILS.id);
+  public static final FormConfig avForm =
+      new FormConfig("DP224JP", ADAPTATION_TO_VEHICLE.id);
 
 }

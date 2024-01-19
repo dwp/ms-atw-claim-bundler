@@ -18,6 +18,13 @@ class ClaimReferenceRequestTest {
   }
 
   @Test
+  @DisplayName("Test ClaimReferenceRequest for AV")
+  void testClaimReferenceRequestForAV() throws InvalidClaimReferenceFormat {
+    ClaimReferenceRequest request = new ClaimReferenceRequest("AV1");
+    assertEquals("AV", request.getClaimType().label);
+  }
+
+  @Test
   @DisplayName("Test ClaimReferenceRequest for SW")
   void testClaimReferenceRequestForSW() throws InvalidClaimReferenceFormat {
     ClaimReferenceRequest request = new ClaimReferenceRequest("SW1");
