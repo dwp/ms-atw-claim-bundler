@@ -1,5 +1,11 @@
 # Changelog
 
+# 1.13.0 - (2024-02-13)
+
+* Updated dependency versions
+* Update fragments
+* Updated distroless version
+
 # 1.12.0 - (2024-01-15)
 
 * Updated dependency versions
