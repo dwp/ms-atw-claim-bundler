@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static uk.gov.dwp.health.atw.msclaimbundler.config.ClaimFormConfiguration.avForm;
 import static uk.gov.dwp.health.atw.msclaimbundler.config.ClaimFormConfiguration.eaForm;
 import static uk.gov.dwp.health.atw.msclaimbundler.config.ClaimFormConfiguration.swForm;
+import static uk.gov.dwp.health.atw.msclaimbundler.config.ClaimFormConfiguration.tiwForm;
 import static uk.gov.dwp.health.atw.msclaimbundler.config.ClaimFormConfiguration.ttwForm;
 
 import org.junit.jupiter.api.DisplayName;
@@ -40,6 +41,13 @@ class ClaimFormConfigurationTests {
   void testTtwFormConfiguration() {
     assertEquals("DP226JP", ttwForm.getAtwFormId());
     assertEquals(12068, ttwForm.getDrsDocumentId());
+  }
+
+  @Test
+  @DisplayName("Test TIW Form Configuration")
+  void testTiwFormConfiguration() {
+    assertEquals("DP227JP", tiwForm.getAtwFormId());
+    assertEquals(12069, tiwForm.getDrsDocumentId());
   }
 
   @Test

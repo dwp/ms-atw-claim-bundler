@@ -13,6 +13,7 @@ import static org.mockito.Mockito.when;
 import static uk.gov.dwp.health.atw.msclaimbundler.models.enums.ClaimType.ADAPTATION_TO_VEHICLE;
 import static uk.gov.dwp.health.atw.msclaimbundler.models.enums.ClaimType.EQUIPMENT_OR_ADAPTATION;
 import static uk.gov.dwp.health.atw.msclaimbundler.models.enums.ClaimType.SUPPORT_WORKER;
+import static uk.gov.dwp.health.atw.msclaimbundler.models.enums.ClaimType.TRAVEL_IN_WORK;
 import static uk.gov.dwp.health.atw.msclaimbundler.models.enums.ClaimType.TRAVEL_TO_WORK;
 import static uk.gov.dwp.health.atw.msclaimbundler.utils.TestData.ATW_NUMBER;
 import static uk.gov.dwp.health.atw.msclaimbundler.utils.TestData.DECLARATION_VERSION;
@@ -459,6 +460,153 @@ class ClaimApprovedConsumerTests {
 
       LinkedHashMap<String, DocumentType> documentDetails = new LinkedHashMap<>();
       documentDetails.put(claimForUrl, DocumentType.TRAVEL_TO_WORK);
+
+      assertThat(actualBatchUpload,
+          samePropertyValuesAs(expectedBatchUploadWithEnvelopeDocument(now, documentDetails)));
+    }
+  }
+
+  @Test
+  @DisplayName("Process TIW claim")
+  void processTiwClaim() throws MalformedURLException {
+    try (MockedStatic<UUID> mockedUuid = Mockito.mockStatic(UUID.class)) {
+      mockedUuid.when(UUID::randomUUID).thenReturn(defaultUuid);
+
+      String claimReference = "TIW1234567";
+
+      String claimForUrl = "http://localhost:8080/claims/claims/TIW1234567";
+      String newPayeeForUrl = "http://localhost:8080/newPayee/newPayee/NP1234567";
+      LocalDateTime now = LocalDateTime.now();
+      MinimalClaimBody data = new MinimalClaimBody(
+          NINO,
+          ATW_NUMBER,
+          TRAVEL_IN_WORK,
+          claimant,
+          now,
+          ClaimStatus.AWAITING_DRS_UPLOAD,
+          evidences,
+          newPayee,
+          DECLARATION_VERSION
+      );
+
+      ObjectMapper objectMapper = new ObjectMapper();
+      objectMapper.findAndRegisterModules();
+      Map<String, Object> mapOfClaim = objectMapper.convertValue(data, Map.class);
+
+      when(claimService.getClaimForClaimReferenceAndNino(claimReference, NINO)).thenReturn(
+          mapOfClaim);
+
+      when(formGeneratorService.generateAndUploadClaimPdf(mapOfClaim)).thenReturn(
+          new URL(claimForUrl));
+
+      when(claimService.getEvidenceEnvelopDocumentsFromClaimData(data.getEvidence(),
+          data.getCreatedDate())).thenReturn(listOfEnvelopeDocument(now));
+
+      when(formGeneratorService.generateAndUploadNewPayeePdf(any(NewPayeeDetails.class)))
+          .thenReturn(new URL(newPayeeForUrl));
+
+      doNothing().when(claimConnector)
+          .updateClaimStatusToUploadedToDocumentBatch(claimReference, UUID_MOCK);
+      doNothing().when(snsPublisher).publishToDrs(any());
+
+      claimApprovedConsumer.handleMessage(new MessageHeaders(Map.of()),
+          ClaimReferenceNinoRequest.builder().nino(NINO).claimReference(claimReference)
+              .build());
+
+      verify(claimService, times(1)).getClaimForClaimReferenceAndNino(claimReference, NINO);
+      verify(claimService, times(1)).getEvidenceEnvelopDocumentsFromClaimData(data.getEvidence(),
+          data.getCreatedDate());
+      verify(formGeneratorService, times(1)).generateAndUploadClaimPdf(mapOfClaim);
+      verify(formGeneratorService, times(1)).generateAndUploadNewPayeePdf(
+          any(NewPayeeDetails.class));
+      verify(claimConnector, times(1)).updateClaimStatusToUploadedToDocumentBatch(claimReference,
+          UUID_MOCK);
+
+
+      ArgumentCaptor<DocumentBatchEvent> argument =
+          ArgumentCaptor.forClass(DocumentBatchEvent.class);
+
+
+      verify(snsPublisher, times(1)).publishToDrs(argument.capture());
+
+      BatchUpload actualBatchUpload =
+          objectMapper.convertValue(argument.getValue().getPayload(), BatchUpload.class);
+
+
+      LinkedHashMap<String, DocumentType> documentDetails = new LinkedHashMap<>();
+      documentDetails.put(claimForUrl, DocumentType.TRAVEL_IN_WORK);
+      documentDetails.put(newPayeeForUrl, DocumentType.NEW_OR_AMENDED_DETAILS);
+
+      assertThat(actualBatchUpload,
+          samePropertyValuesAs(expectedBatchUploadWithEnvelopeDocument(now, documentDetails)));
+    }
+  }
+
+  @Test
+  @DisplayName("Process TIW claim without new payee")
+  void processTiwClaimWithoutNewPayee() throws MalformedURLException {
+    try (MockedStatic<UUID> mockedUuid = Mockito.mockStatic(UUID.class)) {
+      mockedUuid.when(UUID::randomUUID).thenReturn(defaultUuid);
+
+      String claimReference = "TIW1234567";
+
+      String claimForUrl = "http://localhost:8080/claims/claims/TIW1234567";
+      LocalDateTime now = LocalDateTime.now();
+      MinimalClaimBody data = new MinimalClaimBody(
+          NINO,
+          ATW_NUMBER,
+          TRAVEL_IN_WORK,
+          claimant,
+          now,
+          ClaimStatus.AWAITING_DRS_UPLOAD,
+          evidences,
+          payee,
+          DECLARATION_VERSION
+      );
+
+      ObjectMapper objectMapper = new ObjectMapper();
+      objectMapper.findAndRegisterModules();
+      Map<String, Object> mapOfClaim = objectMapper.convertValue(data, Map.class);
+
+      when(claimService.getClaimForClaimReferenceAndNino(claimReference, NINO)).thenReturn(
+          mapOfClaim);
+
+      when(formGeneratorService.generateAndUploadClaimPdf(mapOfClaim)).thenReturn(
+          new URL(claimForUrl));
+
+      when(claimService.getEvidenceEnvelopDocumentsFromClaimData(data.getEvidence(),
+          data.getCreatedDate())).thenReturn(listOfEnvelopeDocument(now));
+
+      doNothing().when(claimConnector)
+          .updateClaimStatusToUploadedToDocumentBatch(claimReference, UUID_MOCK);
+      doNothing().when(snsPublisher).publishToDrs(any());
+
+      claimApprovedConsumer.handleMessage(new MessageHeaders(Map.of()),
+          ClaimReferenceNinoRequest.builder().nino(NINO).claimReference(claimReference)
+              .build());
+
+      verify(claimService, times(1)).getClaimForClaimReferenceAndNino(claimReference, NINO);
+      verify(claimService, times(1)).getEvidenceEnvelopDocumentsFromClaimData(data.getEvidence(),
+          data.getCreatedDate());
+      verify(formGeneratorService, times(1)).generateAndUploadClaimPdf(mapOfClaim);
+      verify(formGeneratorService, never()).generateAndUploadNewPayeePdf(
+          any(NewPayeeDetails.class));
+      verify(claimConnector, times(1)).updateClaimStatusToUploadedToDocumentBatch(claimReference,
+          UUID_MOCK);
+
+
+      ArgumentCaptor<DocumentBatchEvent> argument =
+          ArgumentCaptor.forClass(DocumentBatchEvent.class);
+
+
+      verify(snsPublisher, times(1)).publishToDrs(argument.capture());
+
+      BatchUpload actualBatchUpload =
+          objectMapper.convertValue(argument.getValue().getPayload(), BatchUpload.class);
+
+
+      LinkedHashMap<String, DocumentType> documentDetails = new LinkedHashMap<>();
+      documentDetails.put(claimForUrl, DocumentType.TRAVEL_IN_WORK);
 
       assertThat(actualBatchUpload,
           samePropertyValuesAs(expectedBatchUploadWithEnvelopeDocument(now, documentDetails)));

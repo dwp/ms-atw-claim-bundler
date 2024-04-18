@@ -4,6 +4,7 @@ import static uk.gov.dwp.health.atw.msclaimbundler.config.ClaimFormConfiguration
 import static uk.gov.dwp.health.atw.msclaimbundler.config.ClaimFormConfiguration.eaForm;
 import static uk.gov.dwp.health.atw.msclaimbundler.config.ClaimFormConfiguration.newOrAmendedDetailsForm;
 import static uk.gov.dwp.health.atw.msclaimbundler.config.ClaimFormConfiguration.swForm;
+import static uk.gov.dwp.health.atw.msclaimbundler.config.ClaimFormConfiguration.tiwForm;
 import static uk.gov.dwp.health.atw.msclaimbundler.config.ClaimFormConfiguration.ttwForm;
 
 import java.util.HashMap;
@@ -15,7 +16,8 @@ public enum ClaimType {
   SUPPORT_WORKER("SW", swForm),
   TRAVEL_TO_WORK("TW", ttwForm),
   NEW_OR_AMENDED_DETAILS("NP", newOrAmendedDetailsForm),
-  ADAPTATION_TO_VEHICLE("AV", avForm);
+  ADAPTATION_TO_VEHICLE("AV", avForm),
+  TRAVEL_IN_WORK("TIW", tiwForm);
 
   private static final Map<String, ClaimType> BY_LABEL = new HashMap<>();
   public final String label;

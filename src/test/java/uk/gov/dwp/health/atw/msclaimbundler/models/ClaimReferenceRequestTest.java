@@ -39,6 +39,13 @@ class ClaimReferenceRequestTest {
   }
 
   @Test
+  @DisplayName("Test ClaimReferenceRequest for TIW")
+  void testClaimReferenceRequestForTIW() throws InvalidClaimReferenceFormat {
+    ClaimReferenceRequest request = new ClaimReferenceRequest("TIW1");
+    assertEquals("TIW", request.getClaimType().label);
+  }
+
+  @Test
   @DisplayName("Test ClaimReferenceRequest for TW1T0")
   void testClaimReferenceRequestForFrontLengthOfLetters() {
     ClaimReferenceRequest request = new ClaimReferenceRequest("TW1T0");

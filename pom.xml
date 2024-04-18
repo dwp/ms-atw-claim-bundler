@@ -10,7 +10,7 @@
     </parent>
     <groupId>uk.gov.dwp.health.atw</groupId>
     <artifactId>ms-claim-bundler</artifactId>
-    <version>1.13.0</version>
+    <version>1.14.0</version>
     <name>ms-claim-bundler</name>
     <description>Service to create and sent claim forms</description>
     <properties>
@@ -23,7 +23,7 @@
         <plugin.surefire.version>2.22.2</plugin.surefire.version>
         <pitest.version>1.5.2</pitest.version>
         <pitest-plugin.version>0.16</pitest-plugin.version>
-        <aws.version>1.12.648</aws.version>
+        <aws.version>1.12.674</aws.version>
         <maven-project-info-reports-plugin.version>3.4.1</maven-project-info-reports-plugin.version>
         <maven-site-plugin.version>3.12.1</maven-site-plugin.version>
         <dwp.message-broker.version>2.10.1-f5fafb7a</dwp.message-broker.version>

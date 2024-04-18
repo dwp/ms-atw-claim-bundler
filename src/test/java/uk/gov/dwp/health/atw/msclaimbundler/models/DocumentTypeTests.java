@@ -27,6 +27,12 @@ class DocumentTypeTests {
   }
 
   @Test
+  @DisplayName("Test TIW Document Type")
+  void testTiwDocumentType() {
+    assertEquals(12069, DocumentType.TRAVEL_IN_WORK.id);
+  }
+
+  @Test
   @DisplayName("Test Invoice Document Type")
   void testInvoiceDocumentType() {
     assertEquals(12075, DocumentType.INVOICE.id);
