@@ -1,6 +1,6 @@
 package uk.gov.dwp.health.atw.msclaimbundler.messaging;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -31,7 +31,8 @@ class ContactInformationApprovedResponseConsumerTest {
   @BeforeEach
   void setUp() {
     ReflectionTestUtils.setField(contactInformationApprovedResponseConsumer, "queue", "queue");
-    ReflectionTestUtils.setField(contactInformationApprovedResponseConsumer, "routingKey", "routingKey");
+    ReflectionTestUtils.setField(contactInformationApprovedResponseConsumer, "routingKey",
+        "routingKey");
   }
 
   @Test
@@ -40,14 +41,9 @@ class ContactInformationApprovedResponseConsumerTest {
   }
 
   @Test
-  void getRoutingKey() {
-    assertEquals("routingKey", contactInformationApprovedResponseConsumer.getRoutingKey());
-  }
-
-  @Test
   @DisplayName("Success - true")
   void handleMessageSuccessTrue() {
-    BatchUploadResponse success =  new BatchUploadResponse();
+    BatchUploadResponse success = new BatchUploadResponse();
     success.setSuccess(true);
     success.setRequestId(CONTACT_INFORMATION_ID);
 
@@ -64,7 +60,7 @@ class ContactInformationApprovedResponseConsumerTest {
   @Test
   @DisplayName("Success - false")
   void handleMessageSuccessFalse() {
-    BatchUploadResponse success =  new BatchUploadResponse();
+    BatchUploadResponse success = new BatchUploadResponse();
     success.setSuccess(false);
     success.setErrorMessage("Error occurred");
     success.setRequestId(CONTACT_INFORMATION_ID);

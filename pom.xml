@@ -5,38 +5,38 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.18</version>
+        <version>3.2.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>uk.gov.dwp.health.atw</groupId>
     <artifactId>ms-claim-bundler</artifactId>
-    <version>1.15.0</version>
+    <version>1.16.0</version>
     <name>ms-claim-bundler</name>
     <description>Service to create and sent claim forms</description>
     <properties>
-        <java.version>11</java.version>
-        <plugin.spotbugs.version>4.0.0</plugin.spotbugs.version>
-        <dwp.encoded-log.version>2.0.5</dwp.encoded-log.version>
-        <checkstyle.plugin.version>3.2.0</checkstyle.plugin.version>
-        <checkstyle.version>9.2.1</checkstyle.version>
-        <plugin.jacoco.version>0.8.8</plugin.jacoco.version>
-        <plugin.surefire.version>2.22.2</plugin.surefire.version>
-        <pitest.version>1.5.2</pitest.version>
-        <pitest-plugin.version>0.16</pitest-plugin.version>
-        <aws.version>1.12.674</aws.version>
-        <maven-project-info-reports-plugin.version>3.4.1</maven-project-info-reports-plugin.version>
+        <java.version>17</java.version>
+        <plugin.spotbugs.maven.version>4.7.3.4</plugin.spotbugs.maven.version>
+        <plugin.spotbugs.version>4.7.3</plugin.spotbugs.version>
+        <dwp.encoded-log.version>3.0.0-dfda47f2</dwp.encoded-log.version>
+        <checkstyle.plugin.version>3.3.1</checkstyle.plugin.version>
+        <checkstyle.version>10.16.0</checkstyle.version>
+        <plugin.jacoco.version>0.8.10</plugin.jacoco.version>
+        <plugin.surefire.version>3.2.5</plugin.surefire.version>
+        <pitest.version>1.16.1</pitest.version>
+        <pitest-plugin.version>1.2.1</pitest-plugin.version>
+        <aws.version>1.12.732</aws.version>
+        <maven-project-info-reports-plugin.version>3.5.0</maven-project-info-reports-plugin.version>
         <maven-site-plugin.version>3.12.1</maven-site-plugin.version>
-        <dwp.message-broker.version>2.10.1-f5fafb7a</dwp.message-broker.version>
-        <jackson.databind.nullable.version>0.2.1</jackson.databind.nullable.version>
+        <dwp.message-broker.version>3.4.0-bd00860c</dwp.message-broker.version>
+        <jackson.databind.nullable.version>0.2.6</jackson.databind.nullable.version>
         <springfox.swagger.version>3.0.0</springfox.swagger.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
-        <openapi.generator.plugin.version>4.2.3</openapi.generator.plugin.version>
-        <snakeyaml.version>1.33
-        </snakeyaml.version> <!-- Override default version used within Spring Boot (1.30) to fix CVE-2022-25857 -->
-        <owasp.version>8.1.2</owasp.version>
-        <jackson-databind.version>2.13.5</jackson-databind.version>
-        <tomcat.version>9.0.83
-        </tomcat.version><!-- Override default version used within Spring Boot to fix CVE-2023-44487, CVE-2023-42794, CVE-2023-42795, CVE-2023-45648, CVE-2023-46589 -->
+        <openapi.generator.plugin.version>7.0.1</openapi.generator.plugin.version>
+        <owasp.version>10.0.2</owasp.version>
+        <jackson-databind.version>2.17.0</jackson-databind.version>
+        <!--fixes CVE errors for repo-->
+        <dwp.data-cryptography.version>3.0.0-fee8a798</dwp.data-cryptography.version>
+        <bc-fips.version>1.0.2.5</bc-fips.version>
     </properties>
     <dependencies>
         <dependency>
@@ -81,11 +81,37 @@
             <groupId>uk.gov.dwp.health.integration</groupId>
             <artifactId>message-broker-integration-autoconfigure</artifactId>
             <version>${dwp.message-broker.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>data-cryptography</artifactId>
+                    <groupId>uk.gov.dwp.health.crypto</groupId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bc-fips</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>uk.gov.dwp.health.crypto</groupId>
+            <artifactId>data-cryptography</artifactId>
+            <version>${dwp.data-cryptography.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bc-fips</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bc-fips</artifactId>
+            <version>${bc-fips.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-inline</artifactId>
-            <version>4.3.1</version>
+            <version>5.2.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -111,13 +137,24 @@
         <!-- Codegen -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson-databind.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson-databind.version}</version>
         </dependency>
         <dependency>
-            <artifactId>jackson-databind-nullable</artifactId>
             <groupId>org.openapitools</groupId>
+            <artifactId>jackson-databind-nullable</artifactId>
             <version>${jackson.databind.nullable.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.3.0</version>
         </dependency>
         <dependency>
             <artifactId>springfox-swagger2</artifactId>
@@ -147,6 +184,28 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>uk.gov.dwp.health.atw.msclaimbundler.MsClaimBundlerApplication</mainClass>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                    <!-- TODO workaround for bc-fips new version compatibility with spring, remove in the future -->
+                    <loaderImplementation>CLASSIC</loaderImplementation>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <artifactId>dependency-check-maven</artifactId>
                 <configuration>
                     <cveValidForHours>12</cveValidForHours>
@@ -162,18 +221,6 @@
                 </executions>
                 <groupId>org.owasp</groupId>
                 <version>${owasp.version}</version>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -217,7 +264,10 @@
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
-                <version>${plugin.spotbugs.version}</version>
+                <version>${plugin.spotbugs.maven.version}</version>
+                <configuration>
+                    <excludeFilterFile>spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+                </configuration>
                 <dependencies>
                     <dependency>
                         <groupId>com.github.spotbugs</groupId>
@@ -225,9 +275,6 @@
                         <version>${plugin.spotbugs.version}</version>
                     </dependency>
                 </dependencies>
-                <configuration>
-                    <excludeFilterFile>spotbugs/spotbugs-exclude.xml</excludeFilterFile>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -341,7 +388,7 @@
                         </goals>
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/api/docbatch-v1.yaml</inputSpec>
-                            <language>spring</language>
+                            <generatorName>spring</generatorName>
                             <library>spring-boot</library>
                             <generateSupportingFiles>true</generateSupportingFiles>
                             <modelPackage>${project.groupId}.openapi.model</modelPackage>
@@ -349,6 +396,7 @@
                             <configOptions>
                                 <groupId>${project.groupId}</groupId>
                                 <artifactId>${project.artifactId}</artifactId>
+                                <useJakartaEe>true</useJakartaEe>
                                 <skipDefaultInterface>true</skipDefaultInterface>
                                 <useOptional>false</useOptional>
                                 <java8>true</java8>

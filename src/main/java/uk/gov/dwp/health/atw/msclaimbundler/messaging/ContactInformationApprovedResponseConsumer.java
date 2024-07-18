@@ -33,11 +33,6 @@ public class ContactInformationApprovedResponseConsumer implements
     return queue;
   }
 
-  @Override
-  public String getRoutingKey() {
-    return routingKey;
-  }
-
   @SneakyThrows
   @Override
   public void handleMessage(MessageHeaders messageHeaders,

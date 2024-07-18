@@ -40,11 +40,6 @@ class ClaimApprovedResponseConsumerTest {
   }
 
   @Test
-  void getRoutingKey() {
-    assertEquals("routingKey", claimApprovedResponseConsumer.getRoutingKey());
-  }
-
-  @Test
   @DisplayName("Success - true")
   void handleMessageSuccessTrue() {
     BatchUploadResponse response = new BatchUploadResponse();

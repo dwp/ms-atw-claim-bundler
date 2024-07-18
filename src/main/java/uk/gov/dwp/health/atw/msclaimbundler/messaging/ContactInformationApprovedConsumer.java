@@ -67,11 +67,6 @@ public class ContactInformationApprovedConsumer
     return queue;
   }
 
-  @Override
-  public String getRoutingKey() {
-    return routingKey;
-  }
-
   @SneakyThrows
   @Override
   public void handleMessage(MessageHeaders messageHeaders,

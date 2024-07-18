@@ -25,7 +25,6 @@ import uk.gov.dwp.health.atw.msclaimbundler.models.enums.DocumentType;
 import uk.gov.dwp.health.atw.openapi.model.BatchUpload;
 import uk.gov.dwp.health.atw.openapi.model.BatchUploadResponse;
 import uk.gov.dwp.health.integration.message.events.EventManager;
-import uk.gov.dwp.health.integration.message.events.QueueEventManager;
 
 @SpringBootTest(classes = SnsPublisher.class)
 class SnsPublisherTests {
@@ -35,9 +34,6 @@ class SnsPublisherTests {
 
   @MockBean
   EventManager eventManager;
-
-  @MockBean
-  QueueEventManager queueEventManager;
 
   @Test
   @DisplayName("Should publish a batch upload event")
@@ -52,12 +48,12 @@ class SnsPublisherTests {
     // given
     DocumentBatchEvent event = new DocumentBatchEvent("queue", upload);
 
-    doNothing().when(queueEventManager).send(event);
+    doNothing().when(eventManager).sendToQueue(event);
 
     // when
     snsPublisher.publishToDrs(event);
 
-    verify(queueEventManager, times(1)).send(event);
+    verify(eventManager, times(1)).sendToQueue(event);
   }
 
 
@@ -90,7 +86,7 @@ class SnsPublisherTests {
     response.setRequestId(UUID_MOCK);
     response.setSuccess(true);
 
-    doNothing().when(queueEventManager).send(any(DocumentBatchResponseEvent.class));
+    doNothing().when(eventManager).sendToQueue(any(DocumentBatchResponseEvent.class));
 
     DocumentBatchResponseEvent send = new DocumentBatchResponseEvent("drsqueue", response);
 
@@ -100,7 +96,7 @@ class SnsPublisherTests {
         ArgumentCaptor.forClass(DocumentBatchResponseEvent.class);
 
 
-    verify(queueEventManager, times(1)).send(argument.capture());
+    verify(eventManager, times(1)).sendToQueue(argument.capture());
     assertThat(argument.getValue().getPayload(), samePropertyValuesAs(send.getPayload()));
 
   }

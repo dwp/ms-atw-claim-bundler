@@ -86,7 +86,6 @@ class ContactInformationApprovedConsumerTest {
   @DisplayName("check queue and topic are set")
   void checkQueueAndTopicAreSet() {
     assertEquals("queue", contactInformationApprovedConsumer.getQueueName());
-    assertEquals("routingKey", contactInformationApprovedConsumer.getRoutingKey());
   }
 
   @Test

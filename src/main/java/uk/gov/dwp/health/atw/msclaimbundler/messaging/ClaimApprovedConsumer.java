@@ -71,11 +71,6 @@ public class ClaimApprovedConsumer implements HealthMessageConsumer<ClaimReferen
     return queue;
   }
 
-  @Override
-  public String getRoutingKey() {
-    return routingKey;
-  }
-
   @SneakyThrows
   @Override
   public void handleMessage(MessageHeaders messageHeaders,

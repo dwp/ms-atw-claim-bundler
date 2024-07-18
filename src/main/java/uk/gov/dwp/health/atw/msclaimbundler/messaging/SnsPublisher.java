@@ -7,7 +7,6 @@ import uk.gov.dwp.health.atw.msclaimbundler.models.DocumentBatchEvent;
 import uk.gov.dwp.health.atw.msclaimbundler.models.DocumentBatchResponseEvent;
 import uk.gov.dwp.health.atw.msclaimbundler.models.TestInboundClaimReferenceMessage;
 import uk.gov.dwp.health.integration.message.events.EventManager;
-import uk.gov.dwp.health.integration.message.events.QueueEventManager;
 
 @Slf4j
 @Component
@@ -15,11 +14,8 @@ public class SnsPublisher {
 
   final EventManager eventManager;
 
-  final QueueEventManager queueEventManager;
-
-  public SnsPublisher(EventManager eventManager, QueueEventManager queueEventManager) {
+  public SnsPublisher(EventManager eventManager) {
     this.eventManager = eventManager;
-    this.queueEventManager = queueEventManager;
   }
 
   public void sendTestMessage(Map<String, Object> payload) {
@@ -28,12 +24,12 @@ public class SnsPublisher {
   }
 
   public void sendDrsResponse(DocumentBatchResponseEvent payload) {
-    queueEventManager.send(payload);
+    eventManager.sendToQueue(payload);
     log.info("Response from DRS");
   }
 
   public void publishToDrs(DocumentBatchEvent payload) {
-    queueEventManager.send(payload);
+    eventManager.sendToQueue(payload);
     log.info("Sent to DRS");
   }
 }

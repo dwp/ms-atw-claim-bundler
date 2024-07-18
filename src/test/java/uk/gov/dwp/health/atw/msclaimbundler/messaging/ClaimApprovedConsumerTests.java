@@ -93,7 +93,6 @@ class ClaimApprovedConsumerTests {
   @DisplayName("check queue and topic are set")
   void checkQueueAndTopicAreSet() {
     assertEquals("queue", claimApprovedConsumer.getQueueName());
-    assertEquals("routingKey", claimApprovedConsumer.getRoutingKey());
   }
 
   @Test
