@@ -15,7 +15,7 @@ cloud:
       static: us-east-1
     credentials:
       accessKey: foo
-      secretKey: bars
+      secretKey: bar
 
 document-batch:
   queue-name: docbatch-batch-upload

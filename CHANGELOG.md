@@ -1,5 +1,12 @@
 # Changelog
 
+# 1.17.0 - (2024-08-21)
+
+* Updated dependency Suppressions
+* Updated distroless version
+* Updated fragments
+* Update to localstack for local testing using docker
+
 # 1.16.0 - (2024-07-16)
 
 * Upgrade to Java 17
