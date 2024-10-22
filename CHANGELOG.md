@@ -1,5 +1,14 @@
 # Changelog
 
+# 1.18.0 - (2024-09-25)
+
+* Updated dependencies
+* Updated dependency suppressions
+* Updated distroless version
+* Updated fragments
+* Upgrade to Spring boot 3.3.3
+* Added dynatrace config
+
 # 1.17.0 - (2024-08-21)
 
 * Updated dependency Suppressions

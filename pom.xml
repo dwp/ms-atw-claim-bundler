@@ -5,34 +5,34 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.5</version>
+        <version>3.3.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>uk.gov.dwp.health.atw</groupId>
     <artifactId>ms-claim-bundler</artifactId>
-    <version>1.17.0</version>
+    <version>1.18.0</version>
     <name>ms-claim-bundler</name>
     <description>Service to create and sent claim forms</description>
     <properties>
         <java.version>17</java.version>
-        <plugin.spotbugs.maven.version>4.7.3.4</plugin.spotbugs.maven.version>
-        <plugin.spotbugs.version>4.7.3</plugin.spotbugs.version>
-        <dwp.encoded-log.version>3.0.0-dfda47f2</dwp.encoded-log.version>
-        <checkstyle.plugin.version>3.3.1</checkstyle.plugin.version>
+        <plugin.spotbugs.maven.version>4.8.6.2</plugin.spotbugs.maven.version>
+        <plugin.spotbugs.version>4.8.6</plugin.spotbugs.version>
+        <checkstyle.plugin.version>3.4.0</checkstyle.plugin.version>
         <checkstyle.version>10.16.0</checkstyle.version>
-        <plugin.jacoco.version>0.8.10</plugin.jacoco.version>
-        <plugin.surefire.version>3.2.5</plugin.surefire.version>
+        <plugin.jacoco.version>0.8.12</plugin.jacoco.version>
+        <plugin.surefire.version>3.3.1</plugin.surefire.version>
         <pitest.version>1.16.1</pitest.version>
         <pitest-plugin.version>1.2.1</pitest-plugin.version>
         <aws.version>1.12.732</aws.version>
         <maven-project-info-reports-plugin.version>3.5.0</maven-project-info-reports-plugin.version>
         <maven-site-plugin.version>3.12.1</maven-site-plugin.version>
-        <dwp.message-broker.version>3.4.0-bd00860c</dwp.message-broker.version>
+        <dwp.encoded-log.version>3.0.0-dfda47f2</dwp.encoded-log.version>
+        <dwp.message-broker.version>3.6.0-bb5743b9</dwp.message-broker.version>
         <jackson.databind.nullable.version>0.2.6</jackson.databind.nullable.version>
         <springfox.swagger.version>3.0.0</springfox.swagger.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <openapi.generator.plugin.version>7.0.1</openapi.generator.plugin.version>
-        <owasp.version>10.0.2</owasp.version>
+        <owasp.version>10.0.3</owasp.version>
         <jackson-databind.version>2.17.0</jackson-databind.version>
         <!--fixes CVE errors for repo-->
         <dwp.data-cryptography.version>3.0.0-fee8a798</dwp.data-cryptography.version>
@@ -61,11 +61,6 @@
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-registry-prometheus</artifactId>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
