@@ -1,5 +1,9 @@
 # Changelog
 
+# 1.19.0 (2024-11-13)
+* Updated dependency suppressions
+* Updated distroless version
+
 # 1.18.0 - (2024-09-25)
 
 * Updated dependencies
