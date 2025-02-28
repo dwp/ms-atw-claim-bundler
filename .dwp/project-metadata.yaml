@@ -6,11 +6,11 @@ project:
   - project_id: 33754036
     component_name: ms-claim-bundler
 
-    version: 1.19.0
+    version: 1.20.0
 
     last_verified:
-      date: "2024-11-13"
-      name: "@luke.halsall"
+      date: "2025-02-25"
+      name: "@ruta.radiya1"
 
     tags:
       payments: false

@@ -1,5 +1,11 @@
 # Changelog
 
+# 1.20.0 (2025-02-25)
+* Updated Message broker library 
+* Resolved Gitlab vulnerabilities 
+* Updated dependency suppression
+* Fixed pipeline
+
 # 1.19.0 (2024-11-13)
 * Updated dependency suppressions
 * Updated distroless version
