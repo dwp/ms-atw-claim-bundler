@@ -13,13 +13,9 @@ import lombok.extern.jackson.Jacksonized;
 public class BankDetails {
 
   @JsonProperty(value = "accountHolderName")
-  @NotNull
-  @NonNull
   String accountHolderName;
 
   @JsonProperty(value = "sortCode")
-  @NotNull
-  @NonNull
   String sortCode;
 
   @JsonProperty(value = "accountNumber")

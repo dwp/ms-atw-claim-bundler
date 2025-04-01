@@ -1,5 +1,15 @@
 # Changelog
 
+# 1.22.0 (2025-03-25)
+
+* Updated data model to have account number for existing payees
+* Fixed pipeline
+
+# 1.21.0 (2025-03-11)
+
+* chore: update ecr push jobs ([1f22728](https://gitlab.com/dwp/health/atw/components/ms-claim-bundler/-/commit/1f22728))
+* chore: pin localstack/localstack docker tag to b5c082a ([9d073c2](https://gitlab.com/dwp/health/atw/components/ms-claim-bundler/-/commit/9d073c2))
+
 # 1.20.0 (2025-02-25)
 * Updated Message broker library 
 * Resolved Gitlab vulnerabilities 

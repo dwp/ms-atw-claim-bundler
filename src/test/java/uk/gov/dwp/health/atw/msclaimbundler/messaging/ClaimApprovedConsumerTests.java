@@ -21,11 +21,11 @@ import static uk.gov.dwp.health.atw.msclaimbundler.utils.TestData.NINO;
 import static uk.gov.dwp.health.atw.msclaimbundler.utils.TestData.UUID_MOCK;
 import static uk.gov.dwp.health.atw.msclaimbundler.utils.TestData.claimant;
 import static uk.gov.dwp.health.atw.msclaimbundler.utils.TestData.evidences;
+import static uk.gov.dwp.health.atw.msclaimbundler.utils.TestData.existingPayee;
 import static uk.gov.dwp.health.atw.msclaimbundler.utils.TestData.expectedBatchUpload;
 import static uk.gov.dwp.health.atw.msclaimbundler.utils.TestData.expectedBatchUploadWithEnvelopeDocument;
 import static uk.gov.dwp.health.atw.msclaimbundler.utils.TestData.listOfEnvelopeDocument;
 import static uk.gov.dwp.health.atw.msclaimbundler.utils.TestData.newPayee;
-import static uk.gov.dwp.health.atw.msclaimbundler.utils.TestData.payee;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.MalformedURLException;
@@ -412,7 +412,7 @@ class ClaimApprovedConsumerTests {
           now,
           ClaimStatus.AWAITING_DRS_UPLOAD,
           evidences,
-          payee,
+          existingPayee,
           DECLARATION_VERSION
       );
 
@@ -559,7 +559,7 @@ class ClaimApprovedConsumerTests {
           now,
           ClaimStatus.AWAITING_DRS_UPLOAD,
           evidences,
-          payee,
+          existingPayee,
           DECLARATION_VERSION
       );
 
@@ -706,7 +706,7 @@ class ClaimApprovedConsumerTests {
           now,
           ClaimStatus.AWAITING_DRS_UPLOAD,
           evidences,
-          payee,
+          existingPayee,
           DECLARATION_VERSION
       );
 
@@ -776,7 +776,7 @@ class ClaimApprovedConsumerTests {
           now,
           ClaimStatus.AWAITING_DRS_UPLOAD,
           null,
-          payee,
+          existingPayee,
           DECLARATION_VERSION
       );
 

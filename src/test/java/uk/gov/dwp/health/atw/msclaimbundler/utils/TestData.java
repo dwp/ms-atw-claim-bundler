@@ -92,6 +92,10 @@ public class TestData {
       .accountNumber("12345677")
       .build();
 
+  public static final BankDetails bankDetailsForExistingPayee = BankDetails.builder()
+      .accountNumber("12345677")
+      .build();
+
   public static final Payee newPayee = Payee.builder()
       .newPayee(true)
       .details(payeeDetails)
@@ -99,9 +103,10 @@ public class TestData {
       .bankDetails(bankDetails)
       .build();
 
-  public static final Payee payee = Payee.builder()
+  public static final Payee existingPayee = Payee.builder()
       .newPayee(false)
       .details(payeeDetails)
+      .bankDetails(bankDetailsForExistingPayee)
       .build();
 
   public static final NewPayeeDetails newPayeeDetails = NewPayeeDetails.builder()
