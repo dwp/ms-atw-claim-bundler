@@ -22,6 +22,7 @@ import static uk.gov.dwp.health.atw.msclaimbundler.utils.TestData.UUID_MOCK;
 import static uk.gov.dwp.health.atw.msclaimbundler.utils.TestData.claimant;
 import static uk.gov.dwp.health.atw.msclaimbundler.utils.TestData.evidences;
 import static uk.gov.dwp.health.atw.msclaimbundler.utils.TestData.existingPayee;
+import static uk.gov.dwp.health.atw.msclaimbundler.utils.TestData.existingPayeeOldDataModel;
 import static uk.gov.dwp.health.atw.msclaimbundler.utils.TestData.expectedBatchUpload;
 import static uk.gov.dwp.health.atw.msclaimbundler.utils.TestData.expectedBatchUploadWithEnvelopeDocument;
 import static uk.gov.dwp.health.atw.msclaimbundler.utils.TestData.listOfEnvelopeDocument;
@@ -395,8 +396,8 @@ class ClaimApprovedConsumerTests {
   }
 
   @Test
-  @DisplayName("Process TW claim without new payee")
-  void processTwClaimWithoutNewPayee() throws MalformedURLException {
+  @DisplayName("Process TW claim with existing payee")
+  void processTwClaimWithExistingPayee() throws MalformedURLException {
     try (MockedStatic<UUID> mockedUuid = Mockito.mockStatic(UUID.class)) {
       mockedUuid.when(UUID::randomUUID).thenReturn(defaultUuid);
 
@@ -413,6 +414,77 @@ class ClaimApprovedConsumerTests {
           ClaimStatus.AWAITING_DRS_UPLOAD,
           evidences,
           existingPayee,
+          DECLARATION_VERSION
+      );
+
+      ObjectMapper objectMapper = new ObjectMapper();
+      objectMapper.findAndRegisterModules();
+      Map<String, Object> mapOfClaim = objectMapper.convertValue(data, Map.class);
+
+      when(claimService.getClaimForClaimReferenceAndNino(claimReference, NINO)).thenReturn(
+          mapOfClaim);
+
+      when(formGeneratorService.generateAndUploadClaimPdf(mapOfClaim)).thenReturn(
+          new URL(claimForUrl));
+
+      when(claimService.getEvidenceEnvelopDocumentsFromClaimData(data.getEvidence(),
+          data.getCreatedDate())).thenReturn(listOfEnvelopeDocument(now));
+
+      doNothing().when(claimConnector)
+          .updateClaimStatusToUploadedToDocumentBatch(claimReference, UUID_MOCK);
+      doNothing().when(snsPublisher).publishToDrs(any());
+
+      claimApprovedConsumer.handleMessage(new MessageHeaders(Map.of()),
+          ClaimReferenceNinoRequest.builder().nino(NINO).claimReference(claimReference)
+              .build());
+
+      verify(claimService, times(1)).getClaimForClaimReferenceAndNino(claimReference, NINO);
+      verify(claimService, times(1)).getEvidenceEnvelopDocumentsFromClaimData(data.getEvidence(),
+          data.getCreatedDate());
+      verify(formGeneratorService, times(1)).generateAndUploadClaimPdf(mapOfClaim);
+      verify(formGeneratorService, never()).generateAndUploadNewPayeePdf(
+          any(NewPayeeDetails.class));
+      verify(claimConnector, times(1)).updateClaimStatusToUploadedToDocumentBatch(claimReference,
+          UUID_MOCK);
+
+
+      ArgumentCaptor<DocumentBatchEvent> argument =
+          ArgumentCaptor.forClass(DocumentBatchEvent.class);
+
+
+      verify(snsPublisher, times(1)).publishToDrs(argument.capture());
+
+      BatchUpload actualBatchUpload =
+          objectMapper.convertValue(argument.getValue().getPayload(), BatchUpload.class);
+
+
+      LinkedHashMap<String, DocumentType> documentDetails = new LinkedHashMap<>();
+      documentDetails.put(claimForUrl, DocumentType.TRAVEL_TO_WORK);
+
+      assertThat(actualBatchUpload,
+          samePropertyValuesAs(expectedBatchUploadWithEnvelopeDocument(now, documentDetails)));
+    }
+  }
+
+  @Test
+  @DisplayName("Process TW claim existing payee old data model")
+  void processTwClaimWithExistingPayeeOldDataModel() throws MalformedURLException {
+    try (MockedStatic<UUID> mockedUuid = Mockito.mockStatic(UUID.class)) {
+      mockedUuid.when(UUID::randomUUID).thenReturn(defaultUuid);
+
+      String claimReference = "TW1234567";
+
+      String claimForUrl = "http://localhost:8080/claims/claims/TW1234567";
+      LocalDateTime now = LocalDateTime.now();
+      MinimalClaimBody data = new MinimalClaimBody(
+          NINO,
+          ATW_NUMBER,
+          TRAVEL_TO_WORK,
+          claimant,
+          now,
+          ClaimStatus.AWAITING_DRS_UPLOAD,
+          evidences,
+          existingPayeeOldDataModel,
           DECLARATION_VERSION
       );
 
@@ -542,8 +614,8 @@ class ClaimApprovedConsumerTests {
   }
 
   @Test
-  @DisplayName("Process TIW claim without new payee")
-  void processTiwClaimWithoutNewPayee() throws MalformedURLException {
+  @DisplayName("Process TIW claim with existing payee")
+  void processTiwClaimWithExistingPayee() throws MalformedURLException {
     try (MockedStatic<UUID> mockedUuid = Mockito.mockStatic(UUID.class)) {
       mockedUuid.when(UUID::randomUUID).thenReturn(defaultUuid);
 
@@ -560,6 +632,77 @@ class ClaimApprovedConsumerTests {
           ClaimStatus.AWAITING_DRS_UPLOAD,
           evidences,
           existingPayee,
+          DECLARATION_VERSION
+      );
+
+      ObjectMapper objectMapper = new ObjectMapper();
+      objectMapper.findAndRegisterModules();
+      Map<String, Object> mapOfClaim = objectMapper.convertValue(data, Map.class);
+
+      when(claimService.getClaimForClaimReferenceAndNino(claimReference, NINO)).thenReturn(
+          mapOfClaim);
+
+      when(formGeneratorService.generateAndUploadClaimPdf(mapOfClaim)).thenReturn(
+          new URL(claimForUrl));
+
+      when(claimService.getEvidenceEnvelopDocumentsFromClaimData(data.getEvidence(),
+          data.getCreatedDate())).thenReturn(listOfEnvelopeDocument(now));
+
+      doNothing().when(claimConnector)
+          .updateClaimStatusToUploadedToDocumentBatch(claimReference, UUID_MOCK);
+      doNothing().when(snsPublisher).publishToDrs(any());
+
+      claimApprovedConsumer.handleMessage(new MessageHeaders(Map.of()),
+          ClaimReferenceNinoRequest.builder().nino(NINO).claimReference(claimReference)
+              .build());
+
+      verify(claimService, times(1)).getClaimForClaimReferenceAndNino(claimReference, NINO);
+      verify(claimService, times(1)).getEvidenceEnvelopDocumentsFromClaimData(data.getEvidence(),
+          data.getCreatedDate());
+      verify(formGeneratorService, times(1)).generateAndUploadClaimPdf(mapOfClaim);
+      verify(formGeneratorService, never()).generateAndUploadNewPayeePdf(
+          any(NewPayeeDetails.class));
+      verify(claimConnector, times(1)).updateClaimStatusToUploadedToDocumentBatch(claimReference,
+          UUID_MOCK);
+
+
+      ArgumentCaptor<DocumentBatchEvent> argument =
+          ArgumentCaptor.forClass(DocumentBatchEvent.class);
+
+
+      verify(snsPublisher, times(1)).publishToDrs(argument.capture());
+
+      BatchUpload actualBatchUpload =
+          objectMapper.convertValue(argument.getValue().getPayload(), BatchUpload.class);
+
+
+      LinkedHashMap<String, DocumentType> documentDetails = new LinkedHashMap<>();
+      documentDetails.put(claimForUrl, DocumentType.TRAVEL_IN_WORK);
+
+      assertThat(actualBatchUpload,
+          samePropertyValuesAs(expectedBatchUploadWithEnvelopeDocument(now, documentDetails)));
+    }
+  }
+
+  @Test
+  @DisplayName("Process TIW claim with existing payee old data model")
+  void processTiwClaimWithExistingPayeeOldDataModel() throws MalformedURLException {
+    try (MockedStatic<UUID> mockedUuid = Mockito.mockStatic(UUID.class)) {
+      mockedUuid.when(UUID::randomUUID).thenReturn(defaultUuid);
+
+      String claimReference = "TIW1234567";
+
+      String claimForUrl = "http://localhost:8080/claims/claims/TIW1234567";
+      LocalDateTime now = LocalDateTime.now();
+      MinimalClaimBody data = new MinimalClaimBody(
+          NINO,
+          ATW_NUMBER,
+          TRAVEL_IN_WORK,
+          claimant,
+          now,
+          ClaimStatus.AWAITING_DRS_UPLOAD,
+          evidences,
+          existingPayeeOldDataModel,
           DECLARATION_VERSION
       );
 
@@ -759,7 +902,7 @@ class ClaimApprovedConsumerTests {
   }
 
   @Test
-  @DisplayName("Process SW claim without new payee and evidence")
+  @DisplayName("Process SW claim with existing payee and evidence")
   void processSwClaimWithoutNewPayeeAndEvidence() throws MalformedURLException {
     try (MockedStatic<UUID> mockedUuid = Mockito.mockStatic(UUID.class)) {
       mockedUuid.when(UUID::randomUUID).thenReturn(defaultUuid);
@@ -777,6 +920,72 @@ class ClaimApprovedConsumerTests {
           ClaimStatus.AWAITING_DRS_UPLOAD,
           null,
           existingPayee,
+          DECLARATION_VERSION
+      );
+
+      ObjectMapper objectMapper = new ObjectMapper();
+      objectMapper.findAndRegisterModules();
+      Map<String, Object> mapOfClaim = objectMapper.convertValue(data, Map.class);
+
+      when(claimService.getClaimForClaimReferenceAndNino(claimReference, NINO))
+          .thenReturn(mapOfClaim);
+
+      when(formGeneratorService.generateAndUploadClaimPdf(mapOfClaim))
+          .thenReturn(new URL(claimForUrl));
+
+      doNothing().when(claimConnector)
+          .updateClaimStatusToUploadedToDocumentBatch(claimReference, UUID_MOCK);
+      doNothing().when(snsPublisher).publishToDrs(any());
+
+      claimApprovedConsumer.handleMessage(new MessageHeaders(Map.of()),
+          ClaimReferenceNinoRequest.builder().nino(NINO).claimReference(claimReference)
+              .build());
+
+      verify(claimService, times(1)).getClaimForClaimReferenceAndNino(claimReference, NINO);
+      verify(claimService, never()).getEvidenceEnvelopDocumentsFromClaimData(data.getEvidence(),
+          data.getCreatedDate());
+      verify(formGeneratorService, times(1)).generateAndUploadClaimPdf(mapOfClaim);
+      verify(formGeneratorService, never()).generateAndUploadNewPayeePdf(
+          any(NewPayeeDetails.class));
+      verify(claimConnector, times(1)).updateClaimStatusToUploadedToDocumentBatch(claimReference,
+          UUID_MOCK);
+
+
+      ArgumentCaptor<DocumentBatchEvent> argument =
+          ArgumentCaptor.forClass(DocumentBatchEvent.class);
+
+      verify(snsPublisher, times(1)).publishToDrs(argument.capture());
+
+      BatchUpload actualBatchUpload =
+          objectMapper.convertValue(argument.getValue().getPayload(), BatchUpload.class);
+
+      LinkedHashMap<String, DocumentType> documentDetails = new LinkedHashMap<>();
+      documentDetails.put(claimForUrl, DocumentType.SUPPORT_WORKER);
+
+      assertThat(actualBatchUpload,
+          samePropertyValuesAs(expectedBatchUpload(now, documentDetails)));
+    }
+  }
+
+  @Test
+  @DisplayName("Process SW claim with existing payee old data model")
+  void processSwClaimWithExistingPayeeOldDataModel() throws MalformedURLException {
+    try (MockedStatic<UUID> mockedUuid = Mockito.mockStatic(UUID.class)) {
+      mockedUuid.when(UUID::randomUUID).thenReturn(defaultUuid);
+
+      String claimReference = "SW1234567";
+
+      String claimForUrl = "http://localhost:8080/claims/claims/SW1234567";
+      LocalDateTime now = LocalDateTime.now();
+      MinimalClaimBody data = new MinimalClaimBody(
+          NINO,
+          ATW_NUMBER,
+          SUPPORT_WORKER,
+          claimant,
+          now,
+          ClaimStatus.AWAITING_DRS_UPLOAD,
+          null,
+          existingPayeeOldDataModel,
           DECLARATION_VERSION
       );
 

@@ -86,6 +86,11 @@ public class TestData {
       .fullName("Citizen One")
       .build();
 
+  public static final PayeeDetails payeeDetailsFull = PayeeDetails.builder()
+      .fullName("Citizen One")
+      .emailAddress("citizen@email.com")
+      .build();
+
   public static final BankDetails bankDetails = BankDetails.builder()
       .accountHolderName("Citizen One")
       .sortCode("000004")
@@ -107,6 +112,11 @@ public class TestData {
       .newPayee(false)
       .details(payeeDetails)
       .bankDetails(bankDetailsForExistingPayee)
+      .build();
+
+  public static final Payee existingPayeeOldDataModel = Payee.builder()
+      .newPayee(false)
+      .details(payeeDetailsFull)
       .build();
 
   public static final NewPayeeDetails newPayeeDetails = NewPayeeDetails.builder()
