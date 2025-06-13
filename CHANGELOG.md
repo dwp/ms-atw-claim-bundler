@@ -1,5 +1,10 @@
 # Changelog
 
+# 1.24.0 - (2025-06-9)
+
+* Adopt pipeline execution policy changes
+* non major dependency updates
+
 # 1.23.0 - (2025-04-30)
 
 * Updated dependencies
