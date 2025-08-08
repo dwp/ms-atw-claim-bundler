@@ -1,5 +1,13 @@
 # Changelog
 
+# 1.25.0 - (2025-08-6)
+
+* Adopt catalog-info and remove project-metadata
+* Automate test branch pickup
+* springboot minor version bump
+* remove gitlab-sast now that it is included within .post stage
+* dependency updates
+
 # 1.24.0 - (2025-06-9)
 
 * Adopt pipeline execution policy changes
