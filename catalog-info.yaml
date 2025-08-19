@@ -13,11 +13,11 @@ metadata:
     gitlab.com/project-slug: dwp/health/atw/components/ms-claim-bundler
 
   labels:
-    dwp.gov.uk/version: 1.25.0
+    dwp.gov.uk/version: 1.26.0
     dwp.gov.uk/license: ISC
 
-    dwp.gov.uk/last-verified.by: luke.halsall
-    dwp.gov.uk/last-verified.on: 2025-08-06
+    dwp.gov.uk/last-verified.by: louise.olilver1
+    dwp.gov.uk/last-verified.on: 2025-08-15
 
     dwp.gov.uk/open-source.approved: true
     dwp.gov.uk/open-source.location: https://github.com/dwp/ms-atw-claim-bundler
